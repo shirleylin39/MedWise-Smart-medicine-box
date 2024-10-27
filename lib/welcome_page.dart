@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'buttons.dart';
+import 'about_medwise.dart';
+
 
 class Main extends StatelessWidget {
   const Main({super.key});
@@ -39,7 +41,7 @@ class Main extends StatelessWidget {
             Align(
               alignment: const Alignment(0.0, -0.4),
               child: SvgPicture.asset(
-                'asset/icons/pills.svg',  // 替換為你的圖標路徑
+                'asset/icons/pills.svg',
                 width: MediaQuery.of(context).size.width*0.19,
                 height:MediaQuery.of(context).size.height*0.18,
               ),
@@ -47,9 +49,9 @@ class Main extends StatelessWidget {
             Align(
               alignment: const Alignment(0.0, 0.04),
               child: SvgPicture.asset(
-                  'asset/icons/medwise_box.svg',  // 替換為你的圖標路徑
-                  width: MediaQuery.of(context).size.width*0.4,
-                  height:MediaQuery.of(context).size.height*0.172,
+                'asset/icons/medwise_box.svg',
+                width: MediaQuery.of(context).size.width*0.4,
+                height:MediaQuery.of(context).size.height*0.172,
               ),
             ),
             Align(
@@ -60,14 +62,17 @@ class Main extends StatelessWidget {
                   BigButton(
                     text: 'Connect to MedWise',
                     onPressed: () {
-                    // 點擊事件處理
+                      //To be added
                     },
                   ),
                   const SizedBox(height: 20),
                   BigButton(
                     text: 'About MedWise',
                     onPressed: () {
-                    // 點擊事件處理
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const About1()),
+                      );
                     },
                   ),
                 ],
