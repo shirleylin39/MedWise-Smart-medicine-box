@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'buttons.dart';
 import 'about_medwise.dart';
+import 'connect_medwise.dart';
 
 
-class Main extends StatelessWidget {
-  const Main({super.key});
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,10 @@ class Main extends StatelessWidget {
                   BigButton(
                     text: 'Connect to MedWise',
                     onPressed: () {
-                      //
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Connect1()),
+                      );
                     }
                   ),
                   const SizedBox(height: 20),
@@ -73,7 +77,7 @@ class Main extends StatelessWidget {
                         context,
                         MaterialPageRoute(builder: (context) => const About1()),
                       );
-                    },
+                    }
                   ),
                 ],
               ),

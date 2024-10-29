@@ -1,0 +1,50 @@
+ ##Flutter
+
+String? deviceId;
+bool isPaired = false;
+String? serialNumber;
+String? takerName;
+String? boxMode;
+String? carerName;
+int? intakeTimes;
+DateTime? startDate;
+String? layer1Name;
+DateTime? layer1Time;
+String? layer2Name;
+DateTime? layer2Time;
+String? layer3Name;
+DateTime? layer3Time;
+String? reminderSetting;
+String? reminderSound;
+String? reminderNote;
+String? ledColor;
+bool isDoorOpen = false;
+bool isLidOpen = false;
+int completeIntake = 0;
+double completePercentage = 0.0;
+
+
+## MongoDB
+
+device_id: { type: String, unique: true, required: true },
+isPaired: { type: Boolean, required: true },
+serial_number: { type: String },
+taker_name: { type: String },
+box_mode: { type: String },
+carer_name: { type: String },
+intake_times: { type: Number },
+start_date: { type: Date },
+layer1_name: { type: String },
+layer1_time: { type: String },
+layer2_name: { type: String },
+layer2_time: { type: String },
+layer3_name: { type: String },
+layer3_time: { type: String },
+reminder_setting: { type: String },
+reminder_sound: { type: String },
+reminder_note: { type: String },
+led_color: { type: String },
+is_door_open: { type: Boolean, default: false },
+is_lid_open: { type: Boolean, default: false },
+complete_intake: { type: Number, default: 0},
+complete_percentage: { type: Number, default: 0.0}
