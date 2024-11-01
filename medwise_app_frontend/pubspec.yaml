@@ -68,6 +68,10 @@ flutter:
     - asset/icons/about_carousel.svg
     - asset/icons/connect_device.svg
     - asset/icons/connect_check.svg
+    - asset/icons/connect_selfmode.svg
+    - asset/icons/connect_othermode.svg
+    - asset/icons/connect_selfmode.png
+    - asset/icons/connect_othermode.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

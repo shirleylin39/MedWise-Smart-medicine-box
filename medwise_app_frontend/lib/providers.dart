@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ConnectProvider extends ChangeNotifier {
-  String? deviceId;
   bool isPaired = false;
   String? serialNumber;
   String? takerName;
   String? boxMode;
   String? carerName;
   int? intakeTimes;
-
-
-  void addDevice(String id) {
-    deviceId = id;
-    notifyListeners();
-  }
 
   void setPaired(bool paired) {
     isPaired = paired;
@@ -46,10 +39,19 @@ class ConnectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reset() {
+    isPaired = false;
+    serialNumber = null;
+    takerName = null;
+    boxMode = null;
+    carerName = null;
+    intakeTimes = null;
+    notifyListeners();
+  }
+
   Map<String, dynamic> getDeviceInfo() {
     return {
-      'device_id': deviceId,
-      'isPaired': isPaired,
+      'is_paired': isPaired,
       'serial_number': serialNumber,
       'taker_name': takerName,
       'box_mode': boxMode,

@@ -15,8 +15,7 @@ app.use(bodyParser.json());
 
 // Define a schema for device
 const medwiseSchema = new mongoose.Schema({
-    device_id: { type: String, unique: true, required: true },
-    isPaired: { type: Boolean, required: true },
+    is_paired: { type: Boolean, required: true },
     serial_number: { type: String },
     taker_name: { type: String },
     box_mode: { type: String },
@@ -55,41 +54,43 @@ app.get('/api/data', (req, res) => {
 // In-memory storage for devices
 
 app.post('/devices', async (req, res) => {
-    const { device_id, isPaired, serial_number, taker_name, box_mode, carer_name, intake_times } = req.body;
+    const {is_paired, serial_number, taker_name, box_mode, carer_name, intake_times } = req.body;
+    console.log(req.body)
   
-    if (device_id) {
-      try {
+    try {
         const newDevice = new MedWise({
-          device_id,
-          isPaired,
-          serial_number,
-          taker_name,
-          box_mode,
-          carer_name,
-          intake_times
+            is_paired,
+            serial_number,
+            taker_name,
+            box_mode,
+            carer_name,
+            intake_times
         });
   
-        await newDevice.save();
-        res.status(200).send({ message: 'Device info stored successfully in MongoDB' });
-      } catch (error) {
+        const savedDevice = await newDevice.save();
+
+        res.status(200).send({
+            message: 'Device info stored successfully in MongoDB',
+            device_id: savedDevice._id,
+        });
+    } catch (error) {
+        console.error('Error storing device info:', error);
         res.status(500).send({ message: 'Error storing device info', error: error.message });
-      }
-    } else {
-      res.status(400).send({ message: 'Invalid data' });
     }
-  });
+       
+});
   
   // Route to get all stored devices from MongoDB
-  app.get('/devices', async (req, res) => {
+app.get('/devices', async (req, res) => {
     try {
-      const devices = await MedWise.find();
-      res.json(devices);
+        const devices = await MedWise.find();
+        res.json(devices);
     } catch (error) {
-      res.status(500).send({ message: 'Error fetching devices', error: error.message });
+        res.status(500).send({ message: 'Error fetching devices', error: error.message });
     }
-  });
-  
-  // Start the server
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
+});
+
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server running at http://localhost:${PORT}`);
+});
