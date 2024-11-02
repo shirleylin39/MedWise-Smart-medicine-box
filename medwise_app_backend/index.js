@@ -83,7 +83,7 @@ app.post('/devices', async (req, res) => {
   // Route to get all stored devices from MongoDB
 app.get('/devices', async (req, res) => {
     try {
-        const devices = await MedWise.find();
+        const devices = await MedWise.find().sort({ updatedAt: -1 });
         res.json(devices);
     } catch (error) {
         res.status(500).send({ message: 'Error fetching devices', error: error.message });

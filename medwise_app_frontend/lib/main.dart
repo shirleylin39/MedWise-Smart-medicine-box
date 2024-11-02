@@ -11,20 +11,22 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ConnectProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
 
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   // This widget is the root of your application.
+
+  final dataService = DataService();
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchData();
+      dataService.fetchData();
     });
 
     return MaterialApp(

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
@@ -7,10 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'buttons.dart';
 import 'welcome_page.dart';
 import 'providers.dart';
-import 'package:http/http.dart' as http;
-
-
-
+import 'medwise_box.dart';
 
 class Connect1 extends StatefulWidget {
   const Connect1({super.key});
@@ -686,29 +681,11 @@ class _Connect3State extends State<Connect3> {
               onNextPressed: () async {
                 Provider.of<ConnectProvider>(context, listen: false)
                     .setIntakeTimes(currentNumber);
-
-                final connectProvider =
-                Provider.of<ConnectProvider>(context, listen: false);
-                final deviceInfo = connectProvider.getDeviceInfo();
-
-
-                final url = Uri.parse('http://10.0.2.2:3000/devices');
-                final response = await http.post(
-                  url,
-                  headers: {'Content-Type': 'application/json'},
-                  body: jsonEncode(deviceInfo),
-                );
-
-                if (response.statusCode == 200) {
-                  print('Data sent successfully: ${response.body}');
-                  Provider.of<ConnectProvider>(context, listen: false).reset();
-                } else {
-                  print('Failed to send data: ${response.statusCode}');
-                }
+                await Provider.of<ConnectProvider>(context, listen: false).submit(context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (context) => const Welcome()),
+                    builder: (context) => const Connect4()),
                 );
               }
             ),
@@ -718,3 +695,76 @@ class _Connect3State extends State<Connect3> {
     );
   }
 }
+
+class Connect4 extends StatelessWidget {
+  const Connect4({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFE9),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        clipBehavior: Clip.antiAlias,
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFFE9),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: const Alignment(-0.4, -0.6),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: const Text(
+                  'Setting complete!\nYour new MedWise box is added to the box list.',
+                  style: TextStyle(
+                    color: Color(0xFF191717),
+                    fontSize: 19,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 0,
+                    letterSpacing: -0.33,
+                  )
+                )
+              )
+            ),
+            Align(
+              alignment: const Alignment(0.0, -0.3),
+              child: SvgPicture.asset(
+                'asset/icons/pills.svg',
+                width: MediaQuery.of(context).size.width * 0.19,
+                height: MediaQuery.of(context).size.height * 0.18,
+              ),
+            ),
+            Align(
+              alignment: const Alignment(0.0, 0.14),
+              child: SvgPicture.asset(
+                'asset/icons/medwise_box.svg',
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height * 0.172,
+              ),
+            ),
+            Align(
+              alignment: const Alignment(0.0, 0.48),
+              child: BigButton(
+                text: 'Check my box list!',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BoxMain()),
+                  );
+                }
+              ),
+            ),
+          ]
+        ),
+      ),
+    );
+  }
+}
+
+
+
