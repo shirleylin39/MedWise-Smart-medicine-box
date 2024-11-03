@@ -379,12 +379,14 @@ class ModeButton extends StatefulWidget {
   final String assetName;
   final String text;
   final VoidCallback onPressed;
+  final bool isSelected;
 
   const ModeButton({
     super.key,
     required this.assetName,
     required this.text,
-    required this.onPressed
+    required this.onPressed,
+    required this.isSelected,
   });
 
   @override
@@ -417,7 +419,7 @@ class _ModeButtonState extends State<ModeButton> {
         height:183,
         child: Stack(
           children: [
-            if (!_isPressed)
+            if (!_isPressed && !widget.isSelected)
               Stack (
                 children: [
                   Positioned(
@@ -539,15 +541,16 @@ class _ModeButtonState extends State<ModeButton> {
   }
 }
 
-
 class BoxInfoButton extends StatefulWidget {
   final Map<String, dynamic> device;
   final VoidCallback onPressed;
+  final bool isDisabled;
 
   const BoxInfoButton({
     super.key,
     required this.device,
-    required this.onPressed
+    required this.onPressed,
+    this.isDisabled = false,
   });
 
   @override
@@ -573,20 +576,26 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
 
     return GestureDetector(
       onTapDown: (_) {
-        setState(() {
-          _isPressed = true;
-        });
+        if (!widget.isDisabled){
+          setState(() {
+            _isPressed = true;
+          });
+        }
       },
       onTapUp: (_) {
-        setState(() {
-          _isPressed = false;
-        });
-      widget.onPressed();
+        if (!widget.isDisabled) {
+          setState(() {
+            _isPressed = false;
+          });
+          widget.onPressed();
+        }
       },
       onTapCancel: () {
-        setState(() {
-          _isPressed = false;
-       });
+        if (!widget.isDisabled) {
+          setState(() {
+            _isPressed = false;
+          });
+        }
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width*0.8,
@@ -812,7 +821,6 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
   }
 }
 
-
 class ProgressChart extends StatelessWidget {
   final double progress;
 
@@ -871,4 +879,37 @@ class ProgressChart extends StatelessWidget {
   }
 }
 
+class BoxSettingButton extends StatelessWidget {
+  final VoidCallback onPressed;
 
+  const BoxSettingButton({
+    super.key,
+    required this.onPressed
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: onPressed,
+        child: Container(
+            width: 32,
+            height: 32,
+            clipBehavior: Clip.antiAlias,
+            decoration: ShapeDecoration(
+              color: const Color(0xFF336BB7),
+              shape: CircleBorder()
+            ),
+            child: const Center(
+                child: RotatedBox(
+                    quarterTurns: 2,
+                    child: Icon(
+                      Icons.settings,
+                      color: Color(0xFFFFFFE9),
+                      size: 24,
+                    )
+                )
+            )
+        )
+    );
+  }
+}

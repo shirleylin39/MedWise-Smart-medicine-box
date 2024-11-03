@@ -362,6 +362,7 @@ class _Connect2State extends State<Connect2> {
                         ModeButton(
                           assetName: 'asset/icons/connect_selfmode.png',
                           text: 'Self Carer',
+                          isSelected: boxMode == "self",
                           onPressed: () {
                             setState(() {
                               boxMode = "self";
@@ -373,6 +374,7 @@ class _Connect2State extends State<Connect2> {
                         ModeButton(
                           assetName: 'asset/icons/connect_othermode.png',
                           text: 'Carer for others',
+                          isSelected: boxMode == "others",
                           onPressed: () {
                             setState(() {
                               boxMode = "others";

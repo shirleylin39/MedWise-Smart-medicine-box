@@ -28,15 +28,40 @@ const medwiseSchema = new mongoose.Schema({
     layer2_time: { type: String },
     layer3_name: { type: String },
     layer3_time: { type: String },
-    reminder_setting: { type: String },
-    reminder_sound: { type: String },
+    reminder_setting: { type: String,
+        default: function() {
+          return this.box_mode === 'self' ? 'only app' : 'both';
+        },
+      },
+    reminder_sound: { type: String, default: 'soft music'},
     reminder_note: { type: String },
-    led_color: { type: String },
+    led_color: { type: String, default: 'red' },
     is_door_open: { type: Boolean, default: false },
     is_lid_open: { type: Boolean, default: false },
     complete_intake: { type: Number, default: 0},
     complete_percentage: { type: Number, default: 0.0}
 }, { timestamps: true });
+
+
+medwiseSchema.pre('save', async function(next) {
+    try {
+        if (this.is_door_open) {
+            this.complete_intake += 1;
+        } 
+   
+        if (this.is_lid_open || this.isModified('start_date')) {
+            this.complete_intake = 0;
+        }
+
+        const divisor = this.intake_times === 1 ? 7 : this.intake_times === 2 ? 14 : 21;
+        this.complete_percentage = parseFloat((this.complete_intake / divisor).toFixed(1));
+
+        next();
+    } catch (error) {
+    next(error);
+    }   
+});
+
   
 
 const MedWise = mongoose.model('MedWise', medwiseSchema);
