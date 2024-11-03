@@ -19,19 +19,19 @@ class BoxMain extends StatefulWidget {
 }
 class _BoxMainState extends State<BoxMain> {
   List<dynamic> devices = [];
-  final DeviceService deviceService = DeviceService();// To store the fetched device data
+  final deviceService = DeviceService();// To store the fetched device data
 
   @override
   void initState() {
     super.initState();
-    fetchDevices(); // Fetch data when the widget is first loaded
+    getDevices(); // Fetch data when the widget is first loaded
   }
 
-  Future<void> fetchDevices() async {
+  Future<void> getDevices() async {
     // Use the service to fetch devices
-    List<dynamic> fetchedDevices = await deviceService.fetchDevices();
+    List<dynamic> currentDevices = await deviceService.fetchDevices();
     setState(() {
-      devices = fetchedDevices;
+      devices = currentDevices;
       devices.sort((a, b) => b['updatedAt'].compareTo(a['updatedAt']));
     });
   }
@@ -101,7 +101,7 @@ class _BoxMainState extends State<BoxMain> {
                     onPressed: (){
                       Navigator.push(
                         context, MaterialPageRoute(
-                        builder: (context) => Welcome(),
+                        builder: (context) => const Welcome(),
                       ),
                       );
                     }
@@ -112,19 +112,19 @@ class _BoxMainState extends State<BoxMain> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-      currentIndex: 0,
-      backgroundColor: const Color(0xFFFFFFE9),
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Search',
-        ),
-      ],
-    ),
+        currentIndex: 0,
+        backgroundColor: const Color(0xFFFFFFE9),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+        ],
+      ),
     );
   }
 }
@@ -255,39 +255,23 @@ class _BoxUpdateState extends State<BoxUpdate> {
     super.dispose();
   }
 
-  Future<void> updateDeviceInfo() async {
 
-    final updatedDevice = {
+  Map<String, dynamic> updateDevice() {
+    return {
       'taker_name': boxMode == 'self'
-      ? _yourName.text
+          ? _yourName.text
           : _otherName.text,
       'carer_name': boxMode == 'others'
-      ? _otherName.text
+          ? _otherName.text
           : null,
       'box_mode': boxMode,
-      'intake_times' : intakeTimes,
-      'reminder_setting' : reminderSetting,
+      'intake_times': intakeTimes,
+      'reminder_setting': reminderSetting,
       'led_color': ledColor
     };
-
-    final url = Uri.parse('http://10.0.2.2:3000/devices/${widget.device['_id']}');
-    try {
-      final response = await http.put(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(updatedDevice),
-      );
-
-      if (response.statusCode == 200) {
-        print('Device info updated successfully.');
-        Navigator.pop(context); // Go back to the previous page
-      } else {
-        print('Failed to update device info: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -346,10 +330,6 @@ class _BoxUpdateState extends State<BoxUpdate> {
               }).toList(),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: updateDeviceInfo,
-              child: const Text('Save Changes'),
-            ),
           ],
         ),
           Align(
@@ -502,8 +482,13 @@ class _BoxUpdateState extends State<BoxUpdate> {
               children: [
                 MediumButton(
                   text: 'Save',
-                  onPressed: () {
-
+                  onPressed: ()  async {
+                    final deviceService = DeviceService();
+    await deviceService.submitDevice(context, updateDevice());
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => BoxDetails(device: widget.device)),
+    );
                   },
                 ),
                 const SizedBox(width: 20),

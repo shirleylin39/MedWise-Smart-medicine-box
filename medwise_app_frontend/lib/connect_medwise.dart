@@ -6,6 +6,7 @@ import 'buttons.dart';
 import 'welcome_page.dart';
 import 'providers.dart';
 import 'medwise_box.dart';
+import 'api_service.dart';
 
 class Connect1 extends StatefulWidget {
   const Connect1({super.key});
@@ -23,6 +24,7 @@ class _Connect1State extends State<Connect1> {
     });
 
     if (!mounted) return;
+
 
     await Future.delayed(const Duration(seconds: 2));
 
@@ -681,9 +683,12 @@ class _Connect3State extends State<Connect3> {
                 );
               },
               onNextPressed: () async {
+                final deviceService = DeviceService();
                 Provider.of<ConnectProvider>(context, listen: false)
                     .setIntakeTimes(currentNumber);
-                await Provider.of<ConnectProvider>(context, listen: false).submit(context);
+                final newDevice = Provider.of<ConnectProvider>(context, listen: false).getDeviceInfo();
+                await deviceService.submitDevice(context, newDevice);
+                Provider.of<ConnectProvider>(context, listen: false).reset();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
