@@ -43,28 +43,16 @@ const medwiseSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-medwiseSchema.pre('save', async function(next) {
-    try {
-        if (this.is_door_open) {
-            this.complete_intake += 1;
-        } 
-   
-        if (this.is_lid_open || this.isModified('start_date')) {
-            this.complete_intake = 0;
-        }
 
-        const divisor = this.intake_times === 1 ? 7 : this.intake_times === 2 ? 14 : 21;
-        this.complete_percentage = parseFloat((this.complete_intake / divisor).toFixed(1));
-
-        next();
-    } catch (error) {
-    next(error);
-    }   
-});
 
   
 
 const MedWise = mongoose.model('MedWise', medwiseSchema);
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
 
 // Initial route
 app.get('/', (req, res) => {
@@ -76,8 +64,18 @@ app.get('/api/data', (req, res) => {
     res.json({ message: 'This is data from Node.js' });
 });
 
-// In-memory storage for devices
 
+ // Route to get all stored devices from MongoDB
+app.get('/devices', async (req, res) => {
+    try {
+        const devices = await MedWise.find().sort({ updatedAt: -1 });
+        res.json(devices);
+    } catch (error) {
+        res.status(500).send({ message: 'Error fetching devices', error: error.message });
+    }
+});
+
+// In-memory storage for devices
 app.post('/devices', async (req, res) => {
     const {is_paired, serial_number, taker_name, box_mode, carer_name, intake_times } = req.body;
     console.log(req.body)
@@ -105,17 +103,62 @@ app.post('/devices', async (req, res) => {
        
 });
   
-  // Route to get all stored devices from MongoDB
-app.get('/devices', async (req, res) => {
+
+//Update device info
+app.put('/devices/:id', async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+    console.log(req.params)
+    console.log(req.body)
+  
     try {
-        const devices = await MedWise.find().sort({ updatedAt: -1 });
-        res.json(devices);
+      
+      const updatedDevice = await MedWise.findByIdAndUpdate(id, updateData, { new: true });
+  
+      if (!updatedDevice) {
+        return res.status(404).send({ message: 'Device not found' });
+      }
+  
+      res.status(200).send({
+        message: 'Device updated successfully',
+        device: updatedDevice
+      });
     } catch (error) {
-        res.status(500).send({ message: 'Error fetching devices', error: error.message });
+      console.error('Error updating device:', error);
+      res.status(500).send({ message: 'Error updating device', error: error.message });
     }
 });
 
-// Start the server
-app.listen(PORT, () => {
-console.log(`Server running at http://localhost:${PORT}`);
+app.get('/devices/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const device = await MedWise.findById(id);
+      if (!device) {
+        return res.status(404).send({ message: 'Device not found' });
+      }
+      res.status(200).json(device);
+    } catch (error) {
+      res.status(500).send({ message: 'Error fetching device', error: error.message });
+    }
+ });
+
+
+medwiseSchema.pre('save', async function(next) {
+    try {
+        if (this.is_door_open) {
+            this.complete_intake += 1;
+        } 
+   
+        if (this.is_lid_open || this.isModified('start_date')) {
+            this.complete_intake = 0;
+        }
+
+        const divisor = this.intake_times === 1 ? 7 : this.intake_times === 2 ? 14 : 21;
+        this.complete_percentage = parseFloat((this.complete_intake / divisor).toFixed(1));
+
+        next();
+    } catch (error) {
+    next(error);
+    }   
 });
+
