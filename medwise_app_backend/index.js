@@ -108,8 +108,6 @@ app.post('/devices', async (req, res) => {
 app.put('/devices/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-    console.log(req.params)
-    console.log(req.body)
   
     try {
       

@@ -127,42 +127,13 @@ class _BoxMainState extends State<BoxMain> {
 }
 
 
-class BoxDetails extends StatefulWidget {
+class BoxDetails extends StatelessWidget {
   final Map<String, dynamic> device;
 
   const BoxDetails({
     super.key,
     required this.device,
   });
-
-  @override
-  _BoxDetailsState createState() => _BoxDetailsState();
-}
-
-class _BoxDetailsState extends State<BoxDetails> {
-  late Map<String, dynamic> updatedDevice;
-  final deviceService = DeviceService();
-
-  @override
-  void initState() {
-    super.initState();
-    updatedDevice = widget.device;
-    fetchUpdatedDevice();
-  }
-
-  Future<void> fetchUpdatedDevice() async {
-    try {
-      // Pass the device ID from the widget to fetchDeviceById
-      final fetchedDevice = await deviceService.fetchDeviceById(widget.device['_id']);
-      if (fetchedDevice != null) {
-        setState(() {
-          updatedDevice = fetchedDevice;
-        });
-      }
-    } catch (e) {
-      print('Error fetching updated device: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +151,7 @@ class _BoxDetailsState extends State<BoxDetails> {
             Align(
               alignment: const Alignment(0.0, -0.8),
               child: BoxInfoButton(
-                device: widget.device,
+                device: device,
                 onPressed:(){},
                 isDisabled: true,
               ),
@@ -191,7 +162,7 @@ class _BoxDetailsState extends State<BoxDetails> {
                 onPressed: (){
                   Navigator.push(
                     context, MaterialPageRoute(
-                      builder: (context) => BoxUpdate(device: widget.device),
+                      builder: (context) => BoxUpdate(device: device),
                     ),
                   );
                 }
@@ -647,9 +618,11 @@ class _BoxUpdateState extends State<BoxUpdate> {
                     onPressed: ()  async {
                       final deviceService = DeviceService();
                       await deviceService.updateDevice(context, deviceID, updatedData());
+                      Map<String, dynamic>? fetchedDevice = await deviceService.fetchDeviceById(deviceID);
+                      Map<String, dynamic> updatedDevice = fetchedDevice ?? widget.device;
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => BoxDetails(device: widget.device)),
+                        MaterialPageRoute(builder: (context) => BoxDetails(device: updatedDevice)),
                       );
                     },
                   ),
