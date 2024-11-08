@@ -890,26 +890,23 @@ class BoxSettingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: onPressed,
-        child: Container(
-            width: 32,
-            height: 32,
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              color: const Color(0xFF336BB7),
-              shape: CircleBorder()
-            ),
-            child: const Center(
-                child: RotatedBox(
-                    quarterTurns: 2,
-                    child: Icon(
-                      Icons.settings,
-                      color: Color(0xFFFFFFE9),
-                      size: 24,
-                    )
-                )
-            )
+      onTap: onPressed,
+      child: Container(
+        width: 32,
+        height: 32,
+        clipBehavior: Clip.antiAlias,
+        decoration: const ShapeDecoration(
+          color: Color(0xFF336BB7),
+          shape: CircleBorder()
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.settings,
+            color: Color(0xFFFFFFE9),
+            size: 24,
+          )
         )
+      )
     );
   }
 }
@@ -1194,6 +1191,319 @@ class _SmallBoxButtonState extends State<SmallBoxButton> {
             ]
         ),
       ),
+    );
+  }
+}
+
+class TimeSelector extends StatefulWidget {
+  final TimeOfDay? layerTime;
+  final Function(TimeOfDay) newLayerTime;
+
+  const TimeSelector({
+    super.key,
+    this.layerTime,
+    required this.newLayerTime
+  });
+
+  @override
+  _TimeSelectorState createState() => _TimeSelectorState();
+}
+class _TimeSelectorState extends State<TimeSelector> {
+  TimeOfDay? selectedTime;
+
+  void initState() {
+    super.initState();
+    selectedTime = widget.layerTime;
+  }
+
+  Future<void> selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            dialogBackgroundColor: const Color(0xFFFFE149),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFE55733),
+              onPrimary: Color(0xFFFFFFE9),
+              surface: Color(0xFFE55733),
+              onSurface: Color(0xFF191717),
+            ),
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: const Color(0xFFFFFFE9),
+              hourMinuteShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFF191717), width:1.5),
+              ),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected)
+                  ? const Color(0xFF191717)
+                  : const Color(0xFF191717).withOpacity(0.4)),
+              hourMinuteTextStyle: const TextStyle(
+                fontSize: 44,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF191717),
+              ),
+              hourMinuteColor: const Color(0xFFFFFFE9),
+              dayPeriodBorderSide: const BorderSide(color: Color(0xFF191717), width:1.5),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected)
+                  ? const Color(0xFF191717)
+                  : const Color(0xFF191717).withOpacity(0.4)),
+              dayPeriodTextStyle: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF191717),
+              ),
+              dayPeriodColor: const Color(0xFFFFFFE9),
+              dialHandColor: const Color(0xFFE55733),
+              dialBackgroundColor: const Color(0xFFFFE149).withOpacity(0.3),
+              entryModeIconColor: const Color(0xFF191717),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF191717),
+                backgroundColor: const Color(0xFFFFE149),
+                textStyle: const TextStyle(
+                  fontFamily: 'Urbanist',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                alignment: Alignment.center,
+              ),
+            ),
+            textTheme: const TextTheme(
+              headlineLarge: TextStyle(
+                fontSize: 32,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF191717),
+              ),
+              bodyLarge: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF191717),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (pickedTime != null && pickedTime != selectedTime) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+      widget.newLayerTime(pickedTime);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedTime = selectedTime != null
+        ? selectedTime!.format(context)
+        : 'Select Time';
+
+    return SmallBoxButton(
+          text: formattedTime,
+          onPressed: () => selectTime(context),
+          isSelected: false
+        );
+  }
+}
+
+class DateSelector extends StatefulWidget {
+  final DateTime? initialStartDate;
+
+  const DateSelector({
+    super.key,
+    this.initialStartDate
+  });
+
+  @override
+  _DateSelectorState createState() => _DateSelectorState();
+}
+class _DateSelectorState extends State<DateSelector> {
+  DateTime? startDate;
+  DateTime? endDate;
+
+  @override
+  void initState() {
+    super.initState();
+    startDate = widget.initialStartDate;
+    if (startDate != null) {
+      endDate = startDate!.add(const Duration(days: 6));
+    }
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2050),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            dialogBackgroundColor: const Color(0xFFFFFFE9),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFE55733),
+              onPrimary: Color(0xFFFFFFE9),
+              surface: Color(0xFFFFFFE9),
+              onSurface: Color(0xFF191717)
+            ),
+            datePickerTheme: const DatePickerThemeData(
+              headerHelpStyle: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF191717),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF191717),
+                backgroundColor: const Color(0xFFFFE149),
+                textStyle: const TextStyle(
+                  fontFamily: 'Urbanist',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              alignment: Alignment.center,
+              ),
+            ),
+            textTheme: const TextTheme(
+              headlineLarge: TextStyle(
+                fontSize: 32,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF191717),
+              ),
+              bodyLarge: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color:Color(0xFF191717),
+              ),
+              titleSmall: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF191717),
+              ),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFF191717)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              labelStyle: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF191717),
+              ),
+              hintStyle: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF191717).withOpacity(0.5),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (pickedDate != null) {
+      setState(() {
+        startDate = pickedDate;
+        endDate = startDate!.add(const Duration(days: 6));
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Stack(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.65,
+              height: 45,
+              decoration: ShapeDecoration(
+                color: const Color(0xFFFFFFE9),
+                shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 2, color: Color(0xFF191717)),
+                borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 12,
+              top: 12,
+              child:Text(
+                startDate == null
+                    ? 'Select start date'
+                    : '${DateFormat('MM/dd/yy (EEE)').format(startDate!)} - ${DateFormat('MM/dd/yy (EEE)').format(endDate!)}  ',
+                style: TextStyle(
+                  color:  startDate == null
+                      ? const Color(0xFF191717).withOpacity(0.5)
+                      : const Color(0xFF191717),
+                  fontSize: 16,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w600,
+                  height: 0,
+                ),
+              )
+            ),
+          ]
+        ),
+        const SizedBox(
+            width: 21
+        ),
+        CalendarButton(
+          onPressed: () => selectDate(context),
+        ),
+      ],
+    );
+  }
+}
+
+class CalendarButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const CalendarButton({
+    super.key,
+    required this.onPressed
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: onPressed,
+        child: Container(
+            width: 40,
+            height: 40,
+            clipBehavior: Clip.antiAlias,
+            decoration: const ShapeDecoration(
+                color: Color(0xFF336BB7),
+                shape: CircleBorder()
+            ),
+            child: const Center(
+                child: Icon(
+                      Icons.calendar_today_outlined,
+                      color: Color(0xFFFFFFE9),
+                      size: 24,
+                    )
+            )
+        )
     );
   }
 }

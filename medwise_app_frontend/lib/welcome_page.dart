@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:medwise_app_frontend/medwise_box.dart';
 import 'buttons.dart';
 import 'about_medwise.dart';
 import 'connect_medwise.dart';
@@ -56,7 +57,7 @@ class Welcome extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: const Alignment(0.0, 0.45),
+              alignment: const Alignment(0.0, 0.55),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -76,8 +77,21 @@ class Welcome extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const About1()),
+
                       );
                     }
+                  ),
+
+                  const SizedBox(height: 20),
+                  BigButton(
+                      text: 'Box List',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BoxMain()),
+
+                        );
+                      }
                   ),
                 ],
               ),

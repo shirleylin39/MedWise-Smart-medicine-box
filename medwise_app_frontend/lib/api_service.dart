@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:logger/logger.dart';
 
+final logger = Logger();
 
 class DataService {
   Future<void> fetchData() async {
@@ -9,12 +11,12 @@ class DataService {
       final response = await http.get(Uri.parse('http://10.0.2.2:3000'));
 
       if (response.statusCode == 200) {
-        print('Response from Node.js: ${response.body}');
+        logger.i('Response from Node.js: ${response.body}');
       } else {
-        print('Failed to load data: ${response.statusCode}');
+        logger.w('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
+      logger.e('Error: $e');
     }
   }
 }
@@ -28,11 +30,11 @@ class DeviceService {
       if (response.statusCode == 200) {
         return json.decode(response.body) as List<dynamic>;
       } else {
-        print('Failed to load devices: ${response.statusCode}');
+        logger.w('Failed to load devices: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('Error: $e');
+      logger.e('Error: $e');
       return [];
     }
   }
@@ -40,36 +42,44 @@ class DeviceService {
   Future<void> submitDevice(BuildContext context, Map<String, dynamic> deviceData) async {
     final url = Uri.parse('http://10.0.2.2:3000/devices');
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(deviceData),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(deviceData),
+      );
 
-    if (response.statusCode == 200) {
-      print('Data sent successfully: ${response.body}');
-    } else {
-      print('Failed to send data: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        logger.i('Data sent successfully: ${response.body}');
+      } else {
+        logger.w('Failed to send data: ${response.statusCode}');
+      }
+    } catch (e) {
+      logger.e('Error during submitDevice: $e');
     }
   }
 
-  Future<void> updateDevice(BuildContext context, String? id, deviceData) async {
+  Future<void> updateDevice(BuildContext context, String id, deviceData) async {
     final url = Uri.parse('http://10.0.2.2:3000/devices/$id');
 
-    final response = await http.put(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(deviceData),
-    );
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(deviceData),
+      );
 
-    if (response.statusCode == 200) {
-      print('Data updated successfully: ${response.body}');
-    } else {
-      print('Failed to update data: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        logger.i('Data updated successfully: ${response.body}');
+      } else {
+        logger.e('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      logger.e('Error during updateDevice: $e');
     }
   }
 
-  Future<Map<String, dynamic>?> fetchDeviceById(String? id) async {
+  Future<Map<String, dynamic>> fetchDeviceById(String id, Map<String, dynamic> originalData) async {
     final url = Uri.parse('http://10.0.2.2:3000/devices/$id');
 
     try {
@@ -77,12 +87,12 @@ class DeviceService {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        print('Failed to fetch device: ${response.statusCode}');
-        return null;
+        logger.w('Failed to fetch device: ${response.statusCode}');
+        return originalData;
       }
     } catch (e) {
-      print('Error: $e');
-      return null;
+      logger.e('Error: $e');
+      return originalData;
     }
   }
 }

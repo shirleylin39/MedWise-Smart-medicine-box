@@ -761,7 +761,7 @@ class Connect4 extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BoxMain()),
+                      builder: (context) => const BoxMain()),
                   );
                 }
               ),
