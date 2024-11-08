@@ -3,6 +3,9 @@ import 'buttons.dart';
 import 'welcome_page.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'app_elements.dart';
+
 
 class BoxMain extends StatefulWidget {
   const BoxMain({super.key});
@@ -150,6 +153,12 @@ class BoxDetails extends StatelessWidget {
                 isDisabled: true,
               ),
             ),
+          BoxCalendar(
+            deviceID: device['_id'],
+            onDaySelected: (selectedDay) {
+              print('Selected Day: $selectedDay');
+            },
+          ),
             Align(
               alignment: const Alignment(0.75, -0.6),
               child:BoxSettingButton(
@@ -636,7 +645,6 @@ class _BoxUpdateState extends State<BoxUpdate> {
   }
 }
 
-
 class BoxUpdatePlan extends StatefulWidget {
   final Map<String, dynamic> device;
 
@@ -670,11 +678,24 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
     }
 
     try {
-      List<String> timeParts = timeString.split(':');
-      int hour = int.parse(timeParts[0]);
-      int minute = int.parse(timeParts[1]);
+      RegExp regExp = RegExp(r'(\d+):(\d+)\s?(AM|PM)', caseSensitive: false);
+      Match? match = regExp.firstMatch(timeString);
 
-      return TimeOfDay(hour: hour, minute: minute);
+      if (match != null) {
+        int hour = int.parse(match.group(1)!);
+        int minute = int.parse(match.group(2)!);
+        String period = match.group(3)!.toUpperCase();
+
+        if (period == 'PM' && hour != 12) {
+          hour += 12;
+        } else if (period == 'AM' && hour == 12) {
+          hour = 0;
+        }
+
+        return TimeOfDay(hour: hour, minute: minute);
+      } else {
+        return null;
+      }
     } catch (e) {
       logger.e('Error parsing timeString: $e');
       return null; // Return null if parsing fails
@@ -698,7 +719,9 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
     super.initState();
     deviceID = widget.device['_id'];
     intakeTimes = widget.device['intake_times'];
-    startDate = widget.device['start_date'];
+    startDate = widget.device['start_date'] != null
+        ? DateTime.parse(widget.device['start_date'])
+        : null;
     _layer1Name = TextEditingController(
         text: widget.device['layer1_name']
     );
@@ -719,11 +742,11 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
 
   Map<String, dynamic> updatedPlan() {
     return {
-      'start_date': startDate,
+      'start_date': startDate?.toIso8601String(),
       'layer1_name': _layer1Name.text,
       'layer1_time': timeOfDayToString(layer1Time!),
       'layer2_name': intakeTimes != 1
-                   ? _layer2Name
+                   ? _layer2Name.text
                    : null,
       'layer2_time': intakeTimes != 1
                    ? timeOfDayToString(layer2Time!)
@@ -789,7 +812,12 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                       ),
                     ),
                     DateSelector(
-                      initialStartDate: startDate
+                      startDate: startDate,
+                      newStartDate: (selectedStartDate) {
+                        setState(() {
+                          startDate = selectedStartDate;
+                        });
+                      }
                     ),
                     const SizedBox(
                         height: 20
@@ -1006,7 +1034,7 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                     )
                   ],
                     const SizedBox(
-                        height: 20
+                        height: 25
                     ),
                     const Text(
                       'Notification Sound',
@@ -1018,35 +1046,70 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                         height: 0.7,
                       ),
                     ),
-                    DropdownButton<String>(
-                      value: reminderSound,
-                      hint: Text(
-                        'Choose a sound',
-                        style: TextStyle(
-                          color: const Color(0xFF191717).withOpacity(0.5),
-                          fontSize: 16,
-                          fontFamily: 'Urbanist',
-                          fontWeight: FontWeight.w600,
-                        )
-                      ),
-                      items: reminderSoundList.map((String sound) {
-                        return DropdownMenuItem<String>(
-                          value: sound,
-                          child: Text(
-                            sound,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Urbanist',
+                    const SizedBox(
+                        height: 10
+                    ),
+                    Stack(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 45,
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFFFFFE9),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(width: 2, color: Color(0xFF191717)),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          reminderSound = newValue;
-                        });
-                      },
+                          Positioned(
+                            left: 12,
+                            top: 0,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              height: 26,
+                              child: DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                value: reminderSound,
+                                hint: Text(
+                                  'Choose a sound',
+                                  style: TextStyle(
+                                    color: const Color(0xFF191717).withOpacity(0.5),
+                                    fontSize: 16,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                dropdownColor: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                elevation: 0,
+                                iconEnabledColor: const Color(0xFF191717),
+                                items: reminderSoundList.map((String sound) {
+                                  return DropdownMenuItem<String>(
+                                    value: sound,
+                                    child: Text(
+                                      sound,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Urbanist',
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    reminderSound = newValue;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ]
                     ),
+
                     const SizedBox(
                       height: 20
                     ),
@@ -1063,16 +1126,6 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                             height: 0.7,
                           ),
                         ),
-                        
-                        if (reminderSound != null)
-                          Text(
-                            'Selected Sound: $reminderSound',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Urbanist',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
                         const SizedBox(
                           height: 10
                         ),
@@ -1096,7 +1149,7 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                                 width: MediaQuery.of(context).size.width * 0.75,
                                 height: 26,
                                 child: TextField(
-                                  controller: _layer1Name,
+                                  controller: _reminderNote,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: 'Enter Note',
