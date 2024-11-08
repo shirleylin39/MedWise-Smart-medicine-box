@@ -683,14 +683,14 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
 
 
   final List<String> reminderSoundList = [
-    'Beep',
-    'Soft Music',
-    'Chime',
-    'Bell',
-    'Alert',
-    'Melody',
-    'Harp',
-    'Whistle'
+    'beep',
+    'soft music',
+    'chime',
+    'bell',
+    'alert',
+    'melody',
+    'harp',
+    'whistle'
   ];
 
   @override
@@ -1018,6 +1018,35 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                         height: 0.7,
                       ),
                     ),
+                    DropdownButton<String>(
+                      value: reminderSound,
+                      hint: Text(
+                        'Choose a sound',
+                        style: TextStyle(
+                          color: const Color(0xFF191717).withOpacity(0.5),
+                          fontSize: 16,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w600,
+                        )
+                      ),
+                      items: reminderSoundList.map((String sound) {
+                        return DropdownMenuItem<String>(
+                          value: sound,
+                          child: Text(
+                            sound,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Urbanist',
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          reminderSound = newValue;
+                        });
+                      },
+                    ),
                     const SizedBox(
                       height: 20
                     ),
@@ -1034,27 +1063,7 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                             height: 0.7,
                           ),
                         ),
-                        DropdownButton<String>(
-                          value: reminderSound,
-                          hint: Text('Choose a sound'),
-                          items: reminderSoundList.map((String sound) {
-                            return DropdownMenuItem<String>(
-                              value: sound,
-                              child: Text(
-                                sound,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontFamily: 'Urbanist',
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              reminderSound = newValue;
-                            });
-                          },
-                        ),
+                        
                         if (reminderSound != null)
                           Text(
                             'Selected Sound: $reminderSound',

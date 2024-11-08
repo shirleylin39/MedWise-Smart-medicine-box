@@ -104,7 +104,7 @@ app.post('/devices', async (req, res) => {
 });
   
 
-//Update device info
+//Update device info to backend
 app.put('/devices/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
@@ -127,6 +127,7 @@ app.put('/devices/:id', async (req, res) => {
     }
 });
 
+// Fetch updated device by id
 app.get('/devices/:id', async (req, res) => {
     const { id } = req.params;
     try {
