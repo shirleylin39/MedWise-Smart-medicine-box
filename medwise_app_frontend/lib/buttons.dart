@@ -567,7 +567,7 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
 
     DateTime? startDate;
     if (widget.device['start_date'] != null) {
-      startDate = DateTime.parse(widget.device['start_date']);
+      startDate = DateTime.parse(widget.device['start_date']).toLocal();
     }
 
     DateTime? endDate = startDate?.add(const Duration(days: 6));

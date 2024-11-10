@@ -39,7 +39,21 @@ const medwiseSchema = new mongoose.Schema({
     is_door_open: { type: Boolean, default: false },
     is_lid_open: { type: Boolean, default: false },
     complete_intake: { type: Number, default: 0},
-    complete_percentage: { type: Number, default: 0.0}
+    complete_percentage: { type: Number, default: 0.0},
+    scheduled_intake: [
+      {
+          date: { type: Date, required: true }, 
+          medication: { type: String, required: true }, 
+          amount: { type: String }, 
+      }
+  ],
+    medication_history: [
+      {
+          date: { type: Date, default: Date.now }, 
+          medication: { type: String, required: true }, 
+          amount: { type: String }, 
+      }
+  ]
 }, { timestamps: true });
 
 
@@ -161,3 +175,80 @@ medwiseSchema.pre('save', async function(next) {
     }   
 });
 
+app.put('/devices/:id/record', async (req, res) => {
+  const { id } = req.params;
+  const { medication, amount } = req.body;
+
+  try {
+      const updatedDevice = await MedWise.findByIdAndUpdate(
+          id,
+          {
+              $push: {
+                  medication_history: {
+                      medication,
+                      amount,
+                      date: new Date() // 自動添加當前時間
+                  }
+              }
+          },
+          { new: true }
+      );
+
+      if (!updatedDevice) {
+          return res.status(404).send({ message: 'Device not found' });
+      }
+
+      res.status(200).send({
+          message: 'Medication record added successfully',
+          device: updatedDevice
+      });
+  } catch (error) {
+      console.error('Error updating medication record:', error);
+      res.status(500).send({ message: 'Error updating medication record', error: error.message });
+  }
+});
+
+app.get('/devices/:id/medication-history', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const device = await MedWise.findById(id, 'medication_history');
+      if (!device) {
+          return res.status(404).send({ message: 'Device not found' });
+      }
+
+      res.status(200).json(device.medication_history);
+  } catch (error) {
+      res.status(500).send({ message: 'Error fetching medication history', error: error.message });
+  }
+});
+
+medwiseSchema.pre('save', async function(next) {
+  if (this.isModified('start_date') && this.start_date) {
+      const currentDate = new Date(this.start_date);
+      const daysToSchedule = 7; // 排程天數
+      const intakeTimes = [
+          { time: this.layer1_time, name: this.layer1_name },
+          { time: this.layer2_time, name: this.layer2_name },
+          { time: this.layer3_time, name: this.layer3_name }
+      ];
+
+      for (let i = 0; i < daysToSchedule; i++) {
+          intakeTimes.forEach(({ time, name }) => {
+              if (time) {
+                  const [hour, minute] = time.split(':').map(Number);
+                  const scheduledDate = new Date(currentDate);
+                  scheduledDate.setDate(currentDate.getDate() + i);
+                  scheduledDate.setHours(hour, minute, 0, 0);
+
+                  this.scheduled_intake.push({
+                      date: scheduledDate,
+                      medication: name,
+                      amount: 'default amount' // 可根據需求設置
+                  });
+              }
+          });
+      }
+  }
+  next();
+});

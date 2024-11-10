@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'api_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'buttons.dart';
 import 'package:http/http.dart' as http;
@@ -206,7 +207,7 @@ class _DateSelectorState extends State<DateSelector> {
   @override
   void initState() {
     super.initState();
-    selectedStartDate = widget.startDate;
+    selectedStartDate = widget.startDate?.toLocal();
   }
 
   Future<void> selectDate(BuildContext context) async {
@@ -359,44 +360,20 @@ class BoxCalendar extends StatefulWidget {
   @override
   _BoxCalendarState createState() => _BoxCalendarState();
 }
-
 class _BoxCalendarState extends State<BoxCalendar> {
   late Map<DateTime, List<String>> _events;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
   // 固定的 firstDay 和 lastDay
-  final DateTime firstDay = DateTime(2000);
-  final DateTime lastDay = DateTime(2100);
+  final DateTime firstDay = DateTime(2010);
+  final DateTime lastDay = DateTime(2050);
 
   @override
   void initState() {
     super.initState();
     _events = {};
-    _fetchMedicationHistory(widget.deviceID);
-  }
-
-  Future<void> _fetchMedicationHistory(String deviceId) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/devices/$deviceId/medication-history'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> history = json.decode(response.body);
-
-      setState(() {
-        _events = {};
-        for (var record in history) {
-          DateTime date = DateTime.parse(record['date']);
-          String eventDetail = 'Medication: ${record['medication']}, Amount: ${record['amount']}';
-          if (_events[date] != null) {
-            _events[date]!.add(eventDetail);
-          } else {
-            _events[date] = [eventDetail];
-          }
-        }
-      });
-    } else {
-      print('Failed to load medication history');
-    }
+    fetchBacklogByDevice(widget.deviceID);
   }
 
   @override

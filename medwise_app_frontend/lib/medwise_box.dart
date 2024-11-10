@@ -15,17 +15,16 @@ class BoxMain extends StatefulWidget {
 }
 class _BoxMainState extends State<BoxMain> {
   List<dynamic> devices = [];
-  final deviceService = DeviceService();// To store the fetched device data
 
   @override
   void initState() {
     super.initState();
-    getDevices(); // Fetch data when the widget is first loaded
+    getDevices();
   }
 
   Future<void> getDevices() async {
     // Use the service to fetch devices
-    List<dynamic> currentDevices = await deviceService.fetchDevices();
+    List<dynamic> currentDevices = await fetchDevices();
     setState(() {
       devices = currentDevices;
       devices.sort((a, b) => b['updatedAt'].compareTo(a['updatedAt']));
@@ -157,6 +156,7 @@ class BoxDetails extends StatelessWidget {
             deviceID: device['_id'],
             onDaySelected: (selectedDay) {
               print('Selected Day: $selectedDay');
+              print('Device ID: ${device['_id']}');
             },
           ),
             Align(
@@ -616,9 +616,8 @@ class _BoxUpdateState extends State<BoxUpdate> {
                   MediumButton(
                     text: 'Save',
                     onPressed: ()  async {
-                      final deviceService = DeviceService();
-                      await deviceService.updateDevice(context, deviceID, updatedData());
-                      Map<String, dynamic> updatedDevice = await deviceService.fetchDeviceById(deviceID, widget.device);
+                      await updateDevice(context, deviceID, updatedData());
+                      Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BoxDetails(device: updatedDevice)),
@@ -1185,9 +1184,8 @@ class _BoxUpdatePlanState extends State<BoxUpdatePlan> {
                   MediumButton(
                     text: 'Save',
                     onPressed: ()  async {
-                      final deviceService = DeviceService();
-                      await deviceService.updateDevice(context, deviceID, updatedPlan());
-                      Map<String, dynamic> updatedDevice = await deviceService.fetchDeviceById(deviceID, widget.device);
+                      await updateDevice(context, deviceID, updatedPlan());
+                      Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BoxDetails(device: updatedDevice)),

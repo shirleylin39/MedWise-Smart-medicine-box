@@ -683,11 +683,10 @@ class _Connect3State extends State<Connect3> {
                 );
               },
               onNextPressed: () async {
-                final deviceService = DeviceService();
                 Provider.of<ConnectProvider>(context, listen: false)
                     .setIntakeTimes(currentNumber);
                 final newDevice = Provider.of<ConnectProvider>(context, listen: false).getDeviceInfo();
-                await deviceService.submitDevice(context, newDevice);
+                await submitDevice(context, newDevice);
                 Provider.of<ConnectProvider>(context, listen: false).reset();
                 Navigator.push(
                     context,
