@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medwise_app_frontend/medwise_box.dart';
-import 'buttons.dart';
-import 'about_medwise.dart';
-import 'connect_medwise.dart';
+import '../medwise_box/medwise_box.dart';
+import 'buttons/buttons.dart';
+import '../about_medwise/about_medwise.dart';
+import '../connect_medwise/connect_medwise.dart';
 
 
 class Welcome extends StatelessWidget {
