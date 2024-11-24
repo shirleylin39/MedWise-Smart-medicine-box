@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../buttons/buttons.dart';
 import '../utils/providers.dart';
-import '../api_service.dart';
+import '../utils/api_service.dart';
 import '../connect_medwise/connect_medwise.dart';
 
 class Connect3 extends StatefulWidget {

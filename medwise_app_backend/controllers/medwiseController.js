@@ -36,7 +36,6 @@ exports.updateDevice = async (req, res) => {
         }
 
         if (updateData.start_date) {
-            console.log('Pass to createSchedule from updateDevice');
             await createSchedule(updatedDevice);
         }
         

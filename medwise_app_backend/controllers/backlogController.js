@@ -30,8 +30,6 @@ exports.createSchedule = async (medWise) => {
                     const intakeDateTime = new Date(intakeDate)
                     intakeDateTime.setHours(hour, minute, 0, 0);
 
-                    console.log('Start Date: ', startDate )
-                    console.log('Generated intake date:', intakeDate);
 
                     const newBacklog = new Backlog({
                         device_id: medWise._id,

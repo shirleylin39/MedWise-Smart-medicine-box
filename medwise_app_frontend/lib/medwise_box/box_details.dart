@@ -14,70 +14,71 @@ class BoxDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFFFFFE9),
-        body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFFFE9),
+      backgroundColor: const Color(0xFFFFFFE9),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        clipBehavior: Clip.antiAlias,
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFFE9),
+        ),
+        child: Stack(
+          children:[
+            Align(
+              alignment: const Alignment(0.0, -0.8),
+              child: BoxInfoButton(
+                device: device,
+                onPressed:(){},
+                isDisabled: true,
+              ),
             ),
-            child: Stack(
-                children:[
-                  Align(
-                    alignment: const Alignment(0.0, -0.8),
-                    child: BoxInfoButton(
-                      device: device,
-                      onPressed:(){},
-                      isDisabled: true,
+            Align(
+              alignment: const Alignment (0.0, 0.5),
+              child: BoxCalendar(
+                deviceID: device['_id'],
+                onDaySelected: (selectedDay) {
+                },
+              ),
+            ),
+            Align(
+              alignment: const Alignment(0.75, -0.6),
+              child:BoxSettingButton(
+                onPressed: (){
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                    builder: (context) => BoxUpdate(device: device),
+                  ),
+                  );
+                }
+              )
+            ),
+            Align(
+              alignment: const Alignment(0.75, 0.54),
+              child:BoxSettingButton(
+                onPressed: (){
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                      builder: (context) => BoxUpdatePlan(device: device),
                     ),
-                  ),
-                  BoxCalendar(
-                    deviceID: device['_id'],
-                    onDaySelected: (selectedDay) {
-                      print('Selected Day: $selectedDay');
-                      print('Device ID: ${device['_id']}');
-                    },
-                  ),
-                  Align(
-                      alignment: const Alignment(0.75, -0.6),
-                      child:BoxSettingButton(
-                          onPressed: (){
-                            Navigator.push(
-                              context, MaterialPageRoute(
-                              builder: (context) => BoxUpdate(device: device),
-                            ),
-                            );
-                          }
-                      )
-                  ),
-                  Align(
-                      alignment: const Alignment(0.75, 0.2),
-                      child:BoxSettingButton(
-                          onPressed: (){
-                            Navigator.push(
-                              context, MaterialPageRoute(
-                              builder: (context) => BoxUpdatePlan(device: device),
-                            ),
-                            );
-                          }
-                      )
-                  ),
-                  Align(
-                      alignment: const Alignment(-0.9, 0.9),
-                      child:GoBackButton(
-                          onPressed: (){
-                            Navigator.push(
-                              context, MaterialPageRoute(
-                              builder: (context) => const BoxMain(),
-                            ),
-                            );
-                          }
-                      )
-                  )
-                ]
+                  );
+                }
+              )
+            ),
+            Align(
+              alignment: const Alignment(-0.9, 0.9),
+              child:GoBackButton(
+                onPressed: (){
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                      builder: (context) => const BoxMain(),
+                    ),
+                  );
+                }
+              )
             )
+          ]
         )
+      )
     );
   }
 }

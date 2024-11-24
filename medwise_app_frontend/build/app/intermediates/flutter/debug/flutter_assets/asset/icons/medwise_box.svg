@@ -1,0 +1,10 @@
+<svg width="150" height="115" viewBox="0 0 150 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="medwise_box">
+<g id="Vector">
+<path d="M0 71.7392C-1.73895e-06 83.1057 7.90176 94.0065 21.967 102.044C36.0322 110.081 55.1088 114.596 75 114.596C94.8912 114.596 113.968 110.081 128.033 102.044C142.098 94.0065 150 83.1057 150 71.7392L0 71.7392Z" fill="#CEE3FF"/>
+<path d="M0 42.8572L150 41.9255V72.6709H0L0 42.8572Z" fill="#CEE3FF"/>
+</g>
+<ellipse id="Ellipse 5" cx="75" cy="42.8571" rx="75" ry="42.8571" fill="#336BB7"/>
+<ellipse id="Ellipse 4" cx="75.4659" cy="37.2671" rx="32.6087" ry="18.6335" fill="#CEE3FF"/>
+</g>
+</svg>
