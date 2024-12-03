@@ -31,7 +31,7 @@ class _BoxCalendarState extends State<BoxCalendar> {
     setState(() {});
   }
 
-  List<dynamic> _getEventsForSelectedDay(DateTime day) {
+  List<dynamic> _getEvents(DateTime day) {
     return backlogByDevice.where((event) {
       final intakeDate = DateTime.parse(event['intake_date']).toLocal();
       return isSameDay(intakeDate, day);
@@ -40,7 +40,7 @@ class _BoxCalendarState extends State<BoxCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsForSelectedDay = _getEventsForSelectedDay(_selectedDay ?? DateTime.now());
+    final eventsForSelectedDay = _getEvents(_selectedDay ?? DateTime.now());
     return Stack(
       alignment: const Alignment(0.0, 0.0),
       children: [
@@ -66,14 +66,14 @@ class _BoxCalendarState extends State<BoxCalendar> {
                   lastDay: DateTime(2050),
                   focusedDay: DateTime.now().toLocal(),
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  eventLoader: (day) =>_getEventsForSelectedDay(day),
+                  eventLoader: (day) =>_getEvents(day),
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _selectedDay = selectedDay;
                     });
                     widget.onDaySelected?.call(selectedDay);
                   },
-                  rowHeight: 50,
+                  rowHeight: 45,
                   daysOfWeekHeight: 18,
                   headerStyle: const HeaderStyle(
                     titleCentered: true,
@@ -146,7 +146,6 @@ class _BoxCalendarState extends State<BoxCalendar> {
                   )
                 )
               ),
-              const SizedBox(height: 8.0),
               SizedBox(
                 width: MediaQuery.of(context).size.width*0.8,
                 height: MediaQuery.of(context).size.height*0.1,

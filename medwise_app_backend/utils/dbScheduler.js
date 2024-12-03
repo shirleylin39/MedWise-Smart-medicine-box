@@ -8,15 +8,18 @@ async function updateIntakeStatus() {
         const now = new Date();
         const currentIntakes = await Backlog.find({ intake_date_time: { $lte: now }, status: 'scheduled' });
 
+        console.log(`Found ${currentIntakes.length} intakes to process.`);
+        
+
         currentIntakes.forEach(async (intake) => {
-            const medDevice = await MedWise.findById(Backlog.device_id);
-            const timeDifference = now - Backlog.intake_date_time;
+            const medDevice = await MedWise.findById(intake.device_id);
+            const timeDifference = now - intake.intake_date_time;
 
             if (medDevice && medDevice.is_door_open && timeDifference <= THIRTY_MINUTES) {
-                Backlog.status = 'completed';
+                intake.status = 'completed';
                 console.log(`Notification: Complete Intake.`);
             } else {
-                Backlog.status = 'incomplete';
+                intake.status = 'incomplete';
                 console.log(`Notification: Incomplete Intake.`);
             }
 

@@ -149,26 +149,30 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
                                         const SizedBox(
                                             height: 8
                                         ),
-                                        Text(
-                                          (boxMode == 'self'
-                                              ? 'Self Carer\n'
-                                              : 'Carer: ${widget.device['carer_name']}\n') +
-                                              (startDate == null
-                                                  ? 'Add a date'
-                                                  : '${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate!)}'),
-                                          style: const TextStyle(
-                                              color: Color(0xFF191717),
-                                              fontSize: 16,
-                                              fontFamily: 'Urbanist',
-                                              fontWeight: FontWeight.w500,
-                                              letterSpacing: -0.33,
-                                              height: 0
+                                        SizedBox(
+                                          width: 180,
+                                          height: 40,
+                                          child: Text(
+                                            (boxMode == 'self'
+                                                ? 'Self Carer\n'
+                                                : 'Carer: ${widget.device['carer_name']}\n') +
+                                                (startDate == null
+                                                    ? 'Add a date'
+                                                    : '${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate!)}'),
+                                            style: const TextStyle(
+                                                color: Color(0xFF191717),
+                                                fontSize: 16,
+                                                fontFamily: 'Urbanist',
+                                                fontWeight: FontWeight.w500,
+                                                letterSpacing: -0.33,
+                                                height: 0
+                                            ),
                                           ),
                                         ),
                                       ]
                                   ),
                                   const SizedBox(
-                                      width: 50
+                                      width: 40
                                   ),
                                   ProgressChart(progress:(widget.device['complete_percentage'] as num).toDouble(),)
                                 ]
@@ -248,26 +252,31 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
                                       const SizedBox(
                                           height: 8
                                       ),
-                                      Text(
-                                        (boxMode == 'self'
-                                            ? 'Self Carer\n'
-                                            : 'Carer: ${widget.device['carer_name']}\n') +
-                                            (startDate == null
-                                                ? 'Add a date'
-                                                : '${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate!)}'),
-                                        style: const TextStyle(
-                                            color: Color(0xFF191717),
-                                            fontSize: 16,
-                                            fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: -0.33,
-                                            height: 0
-                                        ),
-                                      ),
+                                      SizedBox(
+                                          width: 180,
+                                          height: 40,
+                                          child:
+                                            Text(
+                                              (boxMode == 'self'
+                                                  ? 'Self Carer\n'
+                                                  : 'Carer: ${widget.device['carer_name']}\n') +
+                                                  (startDate == null
+                                                      ? 'Add a date'
+                                                      : '${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate!)}'),
+                                              style: const TextStyle(
+                                                  color: Color(0xFF191717),
+                                                  fontSize: 16,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: -0.33,
+                                                  height: 0
+                                              ),
+                                            ),
+                                      )
                                     ]
                                 ),
                                 const SizedBox(
-                                    width: 50
+                                    width: 40
                                 ),
                                 ProgressChart(progress:(widget.device['complete_percentage'] as num).toDouble(),)
                               ]

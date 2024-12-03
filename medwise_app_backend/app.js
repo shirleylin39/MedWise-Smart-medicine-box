@@ -22,6 +22,5 @@ app.listen(PORT, () => {
 });
  
 
-
 // Schedule checker
-//require('./dbScheduler');
+require('./utils/dbScheduler');

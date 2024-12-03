@@ -68,10 +68,7 @@ exports.fetchBacklogByDevice = async (req, res) => {
 
     try {
         const backlogs = await Backlog.find({ device_id: new mongoose.Types.ObjectId(deviceId) }).populate('device_id', 'taker_name');
-        backlogs.forEach((backlog) => {
-            console.log(`Device ID: ${backlog.device_id._id}, Taker Name: ${backlog.device_id.taker_name}`);
-        });
-
+        
         if (backlogs.length === 0) {
             return res.status(404).send({ message: 'No backlogs found for this device' });
         }
