@@ -70,7 +70,6 @@ MedWise is an intelligent medication management system designed to assist users 
 
 ## 5. Use Cases
 
-
 1. **Busy Professionals**: Tim, an office worker, uses MedWise to manage his medications and receives timely reminders on his phone and smart box.
 2. **Elderly Care**: Tim helps his mother, Mary, by setting up her weekly medications on MedWise. Mary receives notifications, and Tim monitors her adherence remotely.
 3. **Childcare Settings**: Tim's sister, a teacher, manages medications for multiple children using MedWise, ensuring accuracy and security.
@@ -118,5 +117,5 @@ These scenarios demonstrate the system's versatility and practicality for divers
 ---
 
 ## 7. License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg).
 
