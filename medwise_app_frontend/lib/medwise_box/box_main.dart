@@ -3,6 +3,7 @@ import '../buttons/buttons.dart';
 import '../welcome_page.dart';
 import '../utils/api_service.dart';
 import '../medwise_box/medwise_box.dart';
+import '../notification/notification.dart';
 
 class BoxMain extends StatefulWidget {
   const BoxMain({super.key});
@@ -71,15 +72,20 @@ class _BoxMainState extends State<BoxMain> {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: BoxInfoButton(
-                                device: device,
-                                onPressed: () {
+                              device: device,
+                              onPressed: () {
+                                if (device['is_paired'] == false) {
+                                  boxPairNotification(context);
+                                } else {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BoxDetails(device: device),
+                                      builder: (context) =>
+                                          BoxDetails(device: device),
                                     ),
                                   );
                                 }
+                              }
                             ),
                           );
                         },

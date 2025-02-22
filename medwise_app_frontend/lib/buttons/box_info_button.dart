@@ -33,6 +33,7 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
     final dateFormatter = DateFormat('MM/dd (EEE)');
 
     final boxMode = widget.device['box_mode'];
+    final pairMode = widget.device['is_paired'];
 
 
     return GestureDetector(
@@ -136,12 +137,30 @@ class _BoxInfoButtonState extends State<BoxInfoButton> {
                                               ),
                                               Stack(
                                                 children: [
+                                                  const SizedBox(
+                                                    width:30,
+                                                    height:30,
+                                                  ),
                                                   if (widget.device['intake_times'] == 1)
-                                                    SvgPicture.asset('asset/icons/box_icon_1.svg'),
+                                                    Center(
+                                                        child: SvgPicture.asset('asset/icons/box_icon_1.svg')
+                                                    ),
                                                   if (widget.device['intake_times'] == 2)
-                                                    SvgPicture.asset('asset/icons/box_icon_2.svg'),
+                                                    Center(
+                                                        child: SvgPicture.asset('asset/icons/box_icon_2.svg')
+                                                    ),
                                                   if (widget.device['intake_times'] == 3)
-                                                    SvgPicture.asset('asset/icons/box_icon_3.svg'),
+                                                    Center(
+                                                        child: SvgPicture.asset('asset/icons/box_icon_3.svg')
+                                                    ),
+                                                  if (widget.device['is_paired'] == false)
+                                                    const Center(
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 30,  // 設定圖示大小
+                                                        color: Color(0xFFE55733),  // 設定顏色
+                                                      ),
+                                                    )
                                                 ],
                                               )
                                             ]

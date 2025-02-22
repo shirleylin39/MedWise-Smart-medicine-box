@@ -21,6 +21,8 @@ class _BoxUpdateState extends State<BoxUpdate> {
   late int intakeTimes;
   late String reminderSetting;
   late String ledColor;
+  late bool isPaired;
+  late String? serialNumber;
 
   @override
   void initState() {
@@ -48,6 +50,8 @@ class _BoxUpdateState extends State<BoxUpdate> {
     intakeTimes = widget.device['intake_times'];
     reminderSetting = widget.device['reminder_setting'];
     ledColor = widget.device['led_color'];
+    isPaired = widget.device['is_paired'];
+    serialNumber = widget.device['serial_number'];
   }
 
   @override
@@ -68,7 +72,9 @@ class _BoxUpdateState extends State<BoxUpdate> {
       'box_mode': boxMode,
       'intake_times': intakeTimes,
       'reminder_setting': reminderSetting,
-      'led_color': ledColor
+      'led_color': ledColor,
+      'is_paired': isPaired,
+      'serial_number': serialNumber,
     };
   }
 
@@ -405,9 +411,31 @@ class _BoxUpdateState extends State<BoxUpdate> {
                                   ),
                                 ],
                               ),
-                            ]
-                        )
-                    )
+                              const SizedBox(
+                                  height: 30
+                              ),
+                              Center(
+                                child:
+                                  SmallModeButton(
+                                    text: 'Unpair Medwise Box',
+                                    isSelected: false,
+                                    onPressed:() async{
+                                      setState((){
+                                        isPaired = false;
+                                        serialNumber = null;
+                                      });
+                                      await updateDevice(context, deviceID, updatedData());
+                                      Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const BoxMain()),
+                                      );
+                                    },
+                                  ),
+                              ),
+                            ],
+                          ),
+                    ),
                 ),
                 Align(
                   alignment: const Alignment(0.0, 0.8),
