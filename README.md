@@ -1,7 +1,7 @@
 # MedWise: A Smart Medication Management System
 
 ## 1. Overview
-MedWise is an intelligent medication management system designed to assist users in managing their daily medication intake. The system features a smart box, a Flutter-based mobile application, and a robust Node.js backend powered by Express.js and MongoDB. Together, these components provide timely reminders, secure medication storage, and detailed tracking for users and caregivers. Watch the demonstration on [Youtube](https://youtu.be/1V0bv1TzS4I)
+MedWise is an intelligent medication management system designed to assist users in managing their daily medication intake. The system features a smart box, a Flutter-based mobile application, and a robust Node.js backend powered by Express.js and MongoDB. Together, these components provide timely reminders, secure medication storage, and detailed tracking for users and caregivers. Watch the demonstration on [Youtube](https://youtu.be/1V0bv1TzS4I).
 
 ---
 
