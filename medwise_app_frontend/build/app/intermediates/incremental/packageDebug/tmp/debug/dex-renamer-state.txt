@@ -1,4 +1,4 @@
-#Tue Nov 12 09:14:05 CST 2024
+#Sat Feb 22 12:01:16 GMT 2025
 base.0=/Users/shirley/Desktop/medwise/medwise_app_frontend/build/app/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/Users/shirley/Desktop/medwise/medwise_app_frontend/build/app/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex
 base.2=/Users/shirley/Desktop/medwise/medwise_app_frontend/build/app/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex

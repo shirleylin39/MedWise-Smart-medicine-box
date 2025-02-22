@@ -66,7 +66,7 @@ class Welcome extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Connect1()),
+                        MaterialPageRoute(builder: (context) => const Connect1()),
                       );
                     }
                   ),

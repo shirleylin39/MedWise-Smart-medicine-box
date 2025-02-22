@@ -18,6 +18,7 @@ class BoxCalendar extends StatefulWidget {
 
 class _BoxCalendarState extends State<BoxCalendar> {
   DateTime? _selectedDay;
+  DateTime _focusedDay = DateTime.now().toLocal();
   List<dynamic> backlogByDevice = [];
 
   @override
@@ -64,12 +65,13 @@ class _BoxCalendarState extends State<BoxCalendar> {
                 child: TableCalendar(
                   firstDay: DateTime(2020),
                   lastDay: DateTime(2050),
-                  focusedDay: DateTime.now().toLocal(),
+                  focusedDay: _focusedDay,
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                   eventLoader: (day) =>_getEvents(day),
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
                     });
                     widget.onDaySelected?.call(selectedDay);
                   },
