@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../buttons/buttons.dart';
 import '../utils/api_service.dart';
 import '../medwise_box/medwise_box.dart';
+import '../notification/notification.dart';
 
 class BoxUpdate extends StatefulWidget {
   final Map<String, dynamic> device;
@@ -419,37 +420,44 @@ class _BoxUpdateState extends State<BoxUpdate> {
                                   SmallModeButton(
                                     text: 'Unpair Medwise Box',
                                     isSelected: false,
-                                    onPressed:() async{
-                                      setState((){
-                                        isPaired = false;
-                                        serialNumber = null;
-                                      });
-                                      await updateDevice(context, deviceID, updatedData());
-                                      Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const BoxMain()),
+                                    onPressed:() {
+                                      boxUnpairNotification(context, () async {
+                                        setState(() {
+                                          isPaired = false;
+                                          serialNumber = null;
+                                        });
+                                        await updateDevice(
+                                            context, deviceID, updatedData());
+                                        Map<String,
+                                            dynamic> updatedDevice = await fetchDeviceById(
+                                            deviceID, widget.device);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (
+                                              context) => const BoxMain()),
+                                        );
+                                      },
                                       );
-                                    },
+                                    }
                                   ),
-                              ),
+                                )
                             ],
-                          ),
+                        ),
                     ),
                 ),
                 Align(
                   alignment: const Alignment(0.0, 0.8),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
+                      children: [
                       MediumButton(
                         text: 'Save',
-                        onPressed: ()  async {
-                          await updateDevice(context, deviceID, updatedData());
-                          Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => BoxDetails(device: updatedDevice)),
+                        onPressed: () async {
+                        await updateDevice(context, deviceID, updatedData());
+                        Map<String, dynamic> updatedDevice = await fetchDeviceById(deviceID, widget.device);
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BoxDetails(device: updatedDevice)),
                           );
                         },
                       ),

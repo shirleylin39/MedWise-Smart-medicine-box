@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'notification_style.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../connect_medwise/connect_1.dart';
-import '../notification/notification.dart';
+import '../buttons/buttons.dart';
 
 
-void boxPairNotification(BuildContext context) {
-  showDialog(
+Future<void> boxPairNotification(BuildContext context, VoidCallback onPairNow, bool isLoading, bool isPaired) {
+  return showDialog(
     context: context,
     builder: (BuildContext context) {
       return NotificationStyle(
@@ -23,7 +22,7 @@ void boxPairNotification(BuildContext context) {
                 title: const Text(
                     "Connect to MedWise",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Color(0xFF191717),
                       fontSize: 19,
                       fontFamily: 'Urbanist',
@@ -32,43 +31,74 @@ void boxPairNotification(BuildContext context) {
                       letterSpacing: -0.33,
                     )
                 ),
-                content: Container(
-              width: 300,
-              height: 500,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Push the connect button on the MedWise box to connect',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF191717),
-                      fontSize: 15,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
+                content: SizedBox(
+                  width: 300,
+                  height: 500,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Push the connect button on the MedWise box to connect',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF191717),
+                          fontSize: 15,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20
                     ),
-                  ),
-                  Align(
-                    alignment: const Alignment(0.0, -0.1),
-                    child: SvgPicture.asset(
-                      'asset/icons/connect_device.svg',
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.4,
+                    Align(
+                      alignment: const Alignment(0.0, -0.1),
+                      child: SvgPicture.asset(
+                        'asset/icons/connect_device.svg',
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.4,
+                      ),
                     ),
-                  ),
+                    Align(
+                      alignment: const Alignment(-0.02, -0.1),
+                      child: isLoading
+                          ? const SizedBox(
+                        width: 69.0, // Set the desired width
+                        height: 69.0, // Set the desired height
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE55733)),
+                          strokeWidth: 10.0, // Adjust the stroke width as needed
+                        ),
+                      )
+                          : isPaired
+                          ? SvgPicture.asset(
+                          'asset/icons/connect_check.svg')
+                          : Container(),
+                    ),
                   ]
 
 
                   ),
                 ),
                 actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // 關閉配對中視窗
-                    },
-                    child: Text("OK"),
-                  ),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MediumButton(
+                      text: 'Pair Device',
+                      onPressed: () {
+                        onPairNow();
+                      }
+                    ),
+                    const SizedBox(width:10),
+                    MediumButton(
+                      text: 'Cancel',
+                      onPressed: (){
+                        Navigator.pop(context);
+                      }
+                    ),
+                  ],
+                )
                 ],
               );
             },
@@ -78,7 +108,6 @@ void boxPairNotification(BuildContext context) {
         onSecondaryPressed: () {
           Navigator.pop(context);
         },
-      );
-    },
+
   );
-}
+});}

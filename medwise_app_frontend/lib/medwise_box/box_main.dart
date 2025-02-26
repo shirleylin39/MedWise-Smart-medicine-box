@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../buttons/buttons.dart';
 import '../welcome_page.dart';
 import '../utils/api_service.dart';
-import '../medwise_box/medwise_box.dart';
 import '../notification/notification.dart';
+import '../medwise_box/medwise_box.dart';
+import 'dart:math';
 
 class BoxMain extends StatefulWidget {
   const BoxMain({super.key});
@@ -13,6 +14,7 @@ class BoxMain extends StatefulWidget {
 }
 class _BoxMainState extends State<BoxMain> {
   List<dynamic> devices = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -28,6 +30,7 @@ class _BoxMainState extends State<BoxMain> {
       devices.sort((a, b) => b['updatedAt'].compareTo(a['updatedAt']));
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +78,37 @@ class _BoxMainState extends State<BoxMain> {
                               device: device,
                               onPressed: () {
                                 if (device['is_paired'] == false) {
-                                  boxPairNotification(context);
+                                  boxPairNotification(context, () async {
+                                    setState(() {
+                                      _isLoading = true;
+                                      });
+                                      if (!mounted) return;
+
+                                      await Future.delayed(const Duration(seconds: 2));
+
+
+                                      String randomSerialNumber = String.fromCharCodes(
+                                        List.generate(8, (index) => Random().nextInt(26) + 65)
+                                        );
+
+                                      setState(() {
+                                        device['is_paired']= true;
+                                        device['serial_number']= randomSerialNumber;
+                                        _isLoading = false;
+                                        });
+                                      await updateDevice(
+                                        context,
+                                        device['_id'],
+                                        {'is_paired': true, 'serial_number': randomSerialNumber},
+                                      );
+
+                                      getDevices();
+                                      Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (
+                                        context) => const BoxMain()),
+                                      );
+                                  },_isLoading, device['is_paired']);
                                 } else {
                                   Navigator.push(
                                     context,
