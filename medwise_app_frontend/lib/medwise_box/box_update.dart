@@ -24,6 +24,7 @@ class _BoxUpdateState extends State<BoxUpdate> {
   late String ledColor;
   late bool isPaired;
   late String? serialNumber;
+  late DateTime? startDate;
 
   @override
   void initState() {
@@ -53,6 +54,9 @@ class _BoxUpdateState extends State<BoxUpdate> {
     ledColor = widget.device['led_color'];
     isPaired = widget.device['is_paired'];
     serialNumber = widget.device['serial_number'];
+    startDate = widget.device['start_date'] != null
+        ? DateTime.parse(widget.device['start_date'])
+        : null;
   }
 
   @override
@@ -76,6 +80,7 @@ class _BoxUpdateState extends State<BoxUpdate> {
       'led_color': ledColor,
       'is_paired': isPaired,
       'serial_number': serialNumber,
+      'start_date': startDate,
     };
   }
 
@@ -425,6 +430,7 @@ class _BoxUpdateState extends State<BoxUpdate> {
                                         setState(() {
                                           isPaired = false;
                                           serialNumber = null;
+                                          startDate = null;
                                         });
                                         await updateDevice(
                                             context, deviceID, updatedData());

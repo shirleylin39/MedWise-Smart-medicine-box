@@ -14,7 +14,6 @@ class BoxMain extends StatefulWidget {
 }
 class _BoxMainState extends State<BoxMain> {
   List<dynamic> devices = [];
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -23,11 +22,22 @@ class _BoxMainState extends State<BoxMain> {
   }
 
   Future<void> getDevices() async {
-    // Use the service to fetch devices
     List<dynamic> currentDevices = await fetchDevices();
     setState(() {
       devices = currentDevices;
-      devices.sort((a, b) => b['updatedAt'].compareTo(a['updatedAt']));
+      devices.sort((a, b) {
+        final aStart = a['start_date'];
+        final bStart = b['start_date'];
+        if (aStart != null && bStart != null) {
+          return bStart.compareTo(aStart);
+        } else if (aStart == null && bStart == null) {
+          return b['updatedAt'].compareTo(a['updatedAt']);
+        } else if (aStart == null) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
     });
   }
 
@@ -78,37 +88,10 @@ class _BoxMainState extends State<BoxMain> {
                               device: device,
                               onPressed: () {
                                 if (device['is_paired'] == false) {
-                                  boxPairNotification(context, () async {
-                                    setState(() {
-                                      _isLoading = true;
-                                      });
-                                      if (!mounted) return;
-
-                                      await Future.delayed(const Duration(seconds: 2));
-
-
-                                      String randomSerialNumber = String.fromCharCodes(
-                                        List.generate(8, (index) => Random().nextInt(26) + 65)
-                                        );
-
-                                      setState(() {
-                                        device['is_paired']= true;
-                                        device['serial_number']= randomSerialNumber;
-                                        _isLoading = false;
-                                        });
-                                      await updateDevice(
-                                        context,
-                                        device['_id'],
-                                        {'is_paired': true, 'serial_number': randomSerialNumber},
-                                      );
-
-                                      getDevices();
-                                      Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (
-                                        context) => const BoxMain()),
-                                      );
-                                  },_isLoading, device['is_paired']);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => BoxPairNotification1(device: device),
+                                  );
                                 } else {
                                   Navigator.push(
                                     context,
